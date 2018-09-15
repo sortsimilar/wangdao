@@ -1,5 +1,3 @@
-// Reference: https://www.codementor.io/codementorteam/a-comprehensive-guide-to-implementation-of-singly-linked-list-using-c_plus_plus-ondlm5azr
-
 #include<iostream>
 using namespace std;
 
@@ -52,33 +50,35 @@ public:
 	}
 
 
-	// delete at certain position;
-	void delete_element(int x)
+	void delete_element(int x, Node *previous, Node *current)
 	{
-		Node *current = head;
-		Node *previous = NULL;
+		if(current==NULL)    return;
 
-
-
-		while(current != NULL)
+		if(current->data != x)
 		{
-//			cout<<current->data<<" ";
-
-			if(current->data != x)
-			{
-				previous = current;
-				current = current->next;
-			}
-			else
+			delete_element(x, current, current->next);
+		}
+		else
+		{
+			if(current != head)
 			{
 				Node *element_deleted = current;
 				previous->next = current->next;
-
-				current = current->next;
 				delete element_deleted;
+
+				delete_element(x, previous, current->next);
+			}
+			else
+			{
+				Node *element_deleted = head;
+				head = head->next;
+				delete element_deleted;
+
+				delete_element(x, NULL, head);
 			}
 		}
 	}
+
 };
 
 
@@ -88,17 +88,13 @@ int main()
 	List test;
 	test.insert_last(20);
 	test.insert_last(30);
-	test.insert_last(40);
+	test.insert_last(20);
 	test.insert_last(30);
 	test.insert_last(30);
 	test.insert_last(60);
-//	test.insert_start(10); // test insert at start;
-//	test.insert_position(1, 35); // insert at certain position;
-//	test.delete_first(); // delete first element; 
-//	test.delete_last(); // delete last element;
-//	test.delete_position(1);
 
-	test.delete_element(30);
+
+	test.delete_element(20, NULL, test.head);
 
 	test.print_list();
 
